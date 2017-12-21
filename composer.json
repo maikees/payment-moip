@@ -1,0 +1,43 @@
+{
+  "name": "moc-solucoes/payment-moip",
+  "type": "library",
+  "description": "Orm for PHP >= 7.0.",
+  "keywords": [
+    "MoIp",
+    "SDK",
+    "Payment"
+  ],
+  "homepage": "https://github.com/maikees/payment-moip",
+  "license": "MIT",
+  "authors": [
+    {
+      "name": "MOC Soluções",
+      "email": "contato@mocsolucoes.com.br",
+      "homepage": "http://mocsolucoes.com.br",
+      "role": "Developer"
+    }
+  ],
+  "require": {
+    "moip/moip-sdk-php": "^2.0",
+    "php": ">=7.0"
+  },
+  "require-dev": {
+    "phpunit/phpunit": "^6.0",
+    "phpunit/phpunit-mock-objects": "^4.0"
+  },
+  "autoload": {
+    "psr-4": {
+      "MocLibs\\Payment\\Moip\\": "lib/"
+    }
+  },
+  "autoload-dev": {
+    "psr-4": {
+    }
+  },
+  "scripts": {
+    "test": [
+      "phpunit"
+    ],
+    "test-cover": "phpunit --coverage-text"
+  }
+}
