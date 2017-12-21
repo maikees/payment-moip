@@ -18,7 +18,7 @@
     }
   ],
   "require": {
-    "moip/moip-sdk-php": ">=1",
+    "moip/moip-sdk-php": ">=1.0",
     "php": ">=7.0"
   },
   "require-dev": {
