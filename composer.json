@@ -18,7 +18,8 @@
     }
   ],
   "require": {
-    "moip/moip-sdk-php": ">=1.0",
+    "nesbot/carbon": ">=1.0",
+    "moip/moip-sdk-php": ">=2.0",
     "php": ">=7.0"
   },
   "require-dev": {

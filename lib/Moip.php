@@ -34,9 +34,24 @@ class Moip
 
     /**
      * Moip constructor.
+     * @param null $params
      */
-    public function __construct()
+    public function __construct($params = null)
     {
+        if (is_callable($params)) {
+            $params($this);
+        }
+
+        if (is_array($params)) {
+            if (isset($params['key'])) {
+                $this->setKey($params['key']);
+            }
+
+            if (isset($params['token'])) {
+                $this->setKey($params['token']);
+            }
+        }
+
         $this->initEmptyObjects();
 
         return $this;
@@ -162,7 +177,7 @@ class Moip
         $total = 0;
 
         array_walk($this->products, function ($p, $key) use (&$order, &$total) {
-            $order->addItem($p->nome, (int)$p->quantidade, $p->detalhes, intval(round($p->valor*100)));
+            $order->addItem($p->nome, (int)$p->quantidade, $p->detalhes, intval(round($p->valor * 100)));
 
             $total = $p->quantidade * $p->valor;
         });
@@ -209,10 +224,10 @@ class Moip
     {
         $payment = $order->payments()
             ->setCreditCard(
-                (string) $this->cardCredit->mes,
-                (string) $this->cardCredit->ano,
-                (string) $this->cardCredit->numero,
-                (string) $this->cardCredit->cvc,
+                (string)$this->cardCredit->mes,
+                (string)$this->cardCredit->ano,
+                (string)$this->cardCredit->numero,
+                (string)$this->cardCredit->cvc,
                 $customer,
                 true
             )
@@ -223,12 +238,21 @@ class Moip
     }
 
     /**
-     * @return \Moip\Resource\Payment
+     * @return mixed
      */
-    public function checkPayments()
+    private function getOrders()
     {
-        $payment = $this->moip->payments();
+        $payments = $this->moip->orders();
 
-        return $payment;
+        return $payments;
+    }
+
+    /**
+     * @param $id
+     * @return mixed
+     */
+    public function getOrder($id)
+    {
+        return $this->getOrders()->get($id);
     }
 }

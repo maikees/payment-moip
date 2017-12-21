@@ -1,15 +1,25 @@
 <?php
 
-$moip = new \MocLibs\Payment\Moip\Moip();
-$moip->setPaymentType(\MocLibs\Payment\Moip\Moip::PaymentTypeCartao);
-$moip->setKey('1S56AIS9GBLQMNA0GGCEGUTFKC9QOVCCJNXTT6DSY'); //You key on moip
-$moip->setToken('75865XHO78OK1UTFWNJ805QOAQXH8OX5S'); //You token on moip
+use MocLibs\Payment\Moip\Address;
+use MocLibs\Payment\Moip\Buyer;
+use MocLibs\Payment\Moip\CardCredit;
+use MocLibs\Payment\Moip\Moip;
+use MocLibs\Payment\Moip\Product;
+
+require_once "../vendor/autoload.php";
+
+
+$moip = new Moip();
+$moip->setKey('2658S9GBLQMNA0GGCEGUTFKC9QOVCCJNXTT6DSY'); //You key on moip
+$moip->setToken('5A8XXHO78OK1UTFWNJ805QOAQXH8OX5S'); //You token on moip
 $moip->setSandBox(true); //If Teste (sandbox)
+
+$moip->setPaymentType(Moip::PaymentTypeCartao);
 
 $moip->setProduct(new Product([
     'nome' => 'Nome do produto.',
     'quantidade' => 1,
-    'valor' => 500.90,
+    'valor' => 50.90,
     'detalhes' => 'Detalhes do produto.',
 ]));
 
