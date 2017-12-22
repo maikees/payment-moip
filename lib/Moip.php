@@ -25,13 +25,6 @@ class Moip
     const PaymentTypeBoleto = 'Boleto';
     const PaymentTypeCartao = 'Cartao';
 
-    public function setSandBox(bool $sandbox)
-    {
-        $this->sandbox = $sandbox;
-
-        $this->initMoip();
-    }
-
     /**
      * Moip constructor.
      * @param null $params
@@ -48,13 +41,27 @@ class Moip
             }
 
             if (isset($params['token'])) {
-                $this->setKey($params['token']);
+                $this->setToken($params['token']);
+            }
+
+            if(isset($params['sandbox'])){
+                $this->setSandBox(true);
             }
         }
 
         $this->initEmptyObjects();
 
         return $this;
+    }
+
+    /**
+     * @param bool $sandbox
+     */
+    public function setSandBox(bool $sandbox)
+    {
+        $this->sandbox = $sandbox;
+
+        $this->initMoip();
     }
 
     /**
@@ -254,5 +261,13 @@ class Moip
     public function getOrder($id)
     {
         return $this->getOrders()->get($id);
+    }
+
+    /**
+     * @param $id
+     * @return mixed
+     */
+    public function refund($id) {
+        return $this->getOrder($id)->refunds()->creditCardFull();
     }
 }
