@@ -19,6 +19,7 @@ class Moip
     private $sandbox;
 
     private $moip;
+    private $order;
 
     private $paymentType;
 
@@ -44,7 +45,7 @@ class Moip
                 $this->setToken($params['token']);
             }
 
-            if(isset($params['sandbox'])){
+            if (isset($params['sandbox'])) {
                 $this->setSandBox(true);
             }
         }
@@ -197,16 +198,16 @@ class Moip
             $total = $p->quantidade * $p->valor;
         });
 
-        $this->order = $this->order
-            ->setCustomer($customer)
-            ->create();
+        $this->order = $order;
+
+        $this->order = $this->order->setCustomer($customer)->create();
 
         if ($this->paymentType == self::PaymentTypeBoleto) {
             throw new MocLibException('Método de geração de boleto ainda não criado');
         }
 
         if ($this->paymentType == self::PaymentTypeCartao) {
-            return $this->sendPaymentOnCreditCard($this->order, $customer);
+            return $this->sendPaymentOnCreditCard($customer);
         }
 
         return null;
@@ -271,7 +272,8 @@ class Moip
         return $this->getOrders()->get($id);
     }
 
-    public function getCurrentOrder() {
+    public function getCurrentOrder()
+    {
         return $this->order;
     }
 
@@ -288,7 +290,8 @@ class Moip
      * @param $id
      * @return mixed
      */
-    public function refund($id) {
+    public function refund($id)
+    {
         return $this->getOrder($id)->refunds()->creditCardFull();
     }
 }
