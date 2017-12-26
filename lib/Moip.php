@@ -149,16 +149,23 @@ class Moip
             ->setEmail($buyer->email)
             ->setBirthDate($buyer->getDtNascimentoAmericano())
             ->setTaxDocument($buyer->cpf)
-            ->setPhone("00", $buyer->telefone)
-            ->addAddress('BILLING',
+            ->setPhone("00", $buyer->telefone);
+
+        if ($billing) {
+            $customer = $customer->addAddress('BILLING',
                 $billing->endereco, $billing->numero,
                 $billing->bairro, $billing->municipio, $billing->estado,
-                $billing->cep, 8)
-            ->addAddress('SHIPPING',
+                $billing->cep, 8);
+        }
+
+        if ($shipping) {
+            $customer = $customer->addAddress('SHIPPING',
                 $shipping->endereco, $shipping->numero,
                 $shipping->bairro, $shipping->municipio, $shipping->estado,
-                $shipping->cep, 8)
-            ->create();
+                $shipping->cep, 8);
+        }
+
+        $customer->create();
 
         return $this->newOrder($customer);
     }
@@ -179,26 +186,27 @@ class Moip
      */
     private function newOrder($customer)
     {
-        $order = $this->moip->orders()->setOwnId(uniqid());
+        $this->order = $this->moip->orders()->setOwnId(uniqid());
 
         $total = 0;
+        $order = $this->order;
 
         array_walk($this->products, function ($p, $key) use (&$order, &$total) {
             $order->addItem($p->nome, (int)$p->quantidade, $p->detalhes, intval(round($p->valor * 100)));
 
             $total = $p->quantidade * $p->valor;
         });
-        $order = $order
+
+        $this->order = $this->order
             ->setCustomer($customer)
             ->create();
 
         if ($this->paymentType == self::PaymentTypeBoleto) {
             throw new MocLibException('Método de geração de boleto ainda não criado');
-            //            return $this->gera_boleto($order);
         }
 
         if ($this->paymentType == self::PaymentTypeCartao) {
-            return $this->sendPaymentOnCreditCard($order, $customer);
+            return $this->sendPaymentOnCreditCard($this->order, $customer);
         }
 
         return null;
@@ -227,9 +235,9 @@ class Moip
      * @param $customer
      * @return mixed
      */
-    private function sendPaymentOnCreditCard($order, $customer)
+    private function sendPaymentOnCreditCard($customer)
     {
-        $payment = $order->payments()
+        $payment = $this->order->payments()
             ->setCreditCard(
                 (string)$this->cardCredit->mes,
                 (string)$this->cardCredit->ano,
@@ -261,6 +269,19 @@ class Moip
     public function getOrder($id)
     {
         return $this->getOrders()->get($id);
+    }
+
+    public function getCurrentOrder() {
+        return $this->order;
+    }
+
+    /**
+     * @param $id
+     * @return mixed
+     */
+    public function getPayment($id)
+    {
+        return $this->moip->payments()->get($id);
     }
 
     /**

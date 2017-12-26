@@ -46,7 +46,7 @@ class Buyer {
     }
 
     public function getAddressBilling() {
-        return $this->enderecos['BILLING'];
+        return isset($this->enderecos['BILLING']) ? $this->enderecos['BILLING'] : null;
     }
 
     public function setAddressBilling(Address $address) {
@@ -62,10 +62,10 @@ class Buyer {
     }
 
     public function getAddressShipping() {
-        return $this->enderecos['SHIPPING'];
+        return isset($this->enderecos['SHIPPING']) ? $this->enderecos['SHIPPING'] : null;
     }
 
     public function getDtNascimentoAmericano() {
-        return Carbon::createFromFormat('d/m/Y', $this->dtNascimento)->format('Y-m-d');
+        return $this->dtNascimento ? Carbon::createFromFormat('d/m/Y', $this->dtNascimento)->format('Y-m-d') : null;
     }
 }
