@@ -20,7 +20,8 @@ class Moip
 
     private $moip;
     private $order;
-
+	private $holder;
+	
     private $paymentType;
 
     const PaymentTypeBoleto = 'Boleto';
@@ -152,6 +153,12 @@ class Moip
             ->setTaxDocument($buyer->cpf)
             ->setPhone("00", $buyer->telefone);
 
+        $this->holder = $this->moip->holders()
+            ->setFullname($buyer->nome)            
+            ->setBirthDate($buyer->getDtNascimentoAmericano())
+            ->setTaxDocument($buyer->cpf)
+            ->setPhone("00", $buyer->telefone);
+
         if ($billing) {
             $customer = $customer->addAddress('BILLING',
                 $billing->endereco, $billing->numero,
@@ -244,7 +251,7 @@ class Moip
                 (string)$this->cardCredit->ano,
                 (string)$this->cardCredit->numero,
                 (string)$this->cardCredit->cvc,
-                $customer,
+                $this->holder,
                 true
             )
             ->setInstallmentCount($this->cardCredit->parcelas)
